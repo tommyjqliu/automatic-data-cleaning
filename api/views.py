@@ -1,10 +1,12 @@
 from django.http import HttpResponse
-
+import pandas as pd
+from io import BytesIO
 
 def hello_world(request):
-    import pandas as pd
-    from io import BytesIO
+    return HttpResponse("Hello, World!")
 
+def parse_dataset(request):
+    print("Parsing dataset")
     if request.method == 'POST':
         uploaded_file = request.FILES.get('file')
         if uploaded_file:
@@ -28,4 +30,3 @@ def hello_world(request):
             return HttpResponse("No file uploaded.", status=400)
     else:
         return HttpResponse("This endpoint only accepts POST requests.", status=405)
-    return HttpResponse("Hello, World!")
