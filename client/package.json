@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "NODE_ENV=development concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "next dev",
-    "dev:server": "python manage.py runserver",
+    "dev:server": "cd api && python manage.py runserver",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "python manage.py test"
+    "test": "cd api && python manage.py test"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.0",
