@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev": "NODE_ENV=development concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "next dev",
     "dev:server": "python manage.py runserver",
     "build": "next build",

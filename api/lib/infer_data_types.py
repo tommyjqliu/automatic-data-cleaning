@@ -1,5 +1,3 @@
-# %%
-
 import pandas as pd
 
 def infer_and_convert_data_types(df):
@@ -22,15 +20,3 @@ def infer_and_convert_data_types(df):
             df[col] = pd.Categorical(df[col])
 
     return df
-
-# Test the function with your DataFrame
-df = pd.read_csv('sample_data.csv')
-print("Data types before inference:")
-print(df.dtypes)
-
-df = infer_and_convert_data_types(df)
-
-print("\nData types after inference:")
-print(df.dtypes)
-
-# %%

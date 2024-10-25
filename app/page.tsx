@@ -7,7 +7,15 @@ export default function Home() {
 
   const handleUpload = async () => {
     const file = await triggerUpload();
-    console.log(file);
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch("/api/parse", {
+      method: "POST",
+      body: formData,
+    });
+
+    console.log(response);
   };
 
   const testApi = async () => {
