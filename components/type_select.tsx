@@ -1,4 +1,4 @@
-import { Statistic, Statistics } from "@/lib/type";
+import { Statistic } from "@/lib/type";
 import {
   Select,
   SelectContent,
@@ -16,7 +16,7 @@ export default function TypeSelect({
   value: string;
   onChange: (value: string) => void;
 }) {
-  console.log(statistics);
+
   return (
     <Select
       value={value}

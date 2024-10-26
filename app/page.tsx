@@ -1,11 +1,9 @@
 "use client";
 
-import DataTable from "@/components/data_table";
 import TypeSelect from "@/components/type_select";
 import { Button } from "@/components/ui/button";
 import triggerUpload from "@/lib/single_upload";
 import { Statistic, Statistics } from "@/lib/type";
-import Papa from "papaparse";
 import { useRef, useState } from "react";
 import {
   ColumnDef,
