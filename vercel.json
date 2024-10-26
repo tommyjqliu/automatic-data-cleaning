@@ -4,5 +4,10 @@
       "source": "/api/:match*",
       "destination": "api/endpoint.py"
     }
-  ]
+  ],
+  "functions": {
+    "api/**": {
+      "includeFiles": "api/endpoint.py"
+    }
+  }
 }

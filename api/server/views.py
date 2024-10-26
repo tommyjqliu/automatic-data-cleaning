@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 import pandas as pd
 from io import BytesIO
 
-from .lib.infer_data_types import infer_and_convert_data_types
+from lib.infer_data_types import infer_and_convert_data_types
 import logging
 
 logger = logging.getLogger(__name__)
