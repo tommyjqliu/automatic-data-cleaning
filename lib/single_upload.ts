@@ -15,7 +15,7 @@ export default function triggerUpload<M extends boolean = false>(
     fileInput.accept = accept;
     fileInput.style.display = "none";
     document.body.appendChild(fileInput);
-
+    
     // Set up the change event listener
     fileInput.addEventListener("change", () => {
       if (multiple) {

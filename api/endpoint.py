@@ -1,3 +1,4 @@
+"""wsgi endpoint for vercel deployment"""
 import os
 import sys
 

@@ -21,36 +21,47 @@ import {
 } from "@/components/ui/table";
 import parseCsv from "@/lib/parse_csv";
 import downloadCsv from "@/lib/download_csv";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import errorHandler from "@/app/error_handler";
 
 export default function Home() {
   const fileRef = useRef<File | null>(null);
+  const { toast } = useToast();
   const [statistics, setStatistics] = useState<Statistics>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [csv, setCsv] = useState<Record<string, string>[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
-  const handleUpload = async () => {
-    const file = await triggerUpload();
+  const handleUpload = errorHandler(toast, async () => {
+    const file = await triggerUpload({ accept: ".csv,.xls,.xlsx" });
     if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
-    fileRef.current = file;
-    const response = await fetch("/api/auto_parse", {
-      method: "POST",
-      body: formData,
-    });
 
-    const data = await response.json();
+    const extension = file.name.split(".").at(-1) ?? "";
+    if (!["csv", "xlsx", "xls"].includes(extension)) {
+      toast({
+        title: "Unsupported file format",
+        variant: "destructive",
+        description: "Please upload a CSV or Excel file.",
+      });
+      return;
+    }
+
+    const response = await axios.postForm("/api/auto_parse", {
+      file,
+    });
+    const data = response.data;
     const csv = await parseCsv(data.data);
+
     setCsv(csv);
     setHeaders(Object.keys(csv[0]));
     setStatistics(data.statistics);
     setSelectedTypes(
       data.statistics.map((statistic: Statistic[]) => statistic[0].type)
     );
-  };
+  });
 
-  const handleTypeSetting = async (types: string[]) => {
+  const handleTypeSetting = errorHandler(toast, async (types: string[]) => {
     if (!fileRef.current) return;
     const formData = new FormData();
     formData.append("file", fileRef.current);
@@ -61,7 +72,7 @@ export default function Home() {
     });
     const data = await response.json();
     setCsv(await parseCsv(data.data));
-  };
+  });
 
   const columns: ColumnDef<Record<string, string>>[] = headers.map((header) => {
     return {

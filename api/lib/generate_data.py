@@ -24,5 +24,17 @@ def generate_data(n_rows=100000, seed=42):
         "Category": np.random.choice(["A", "B", "C", "D", "E"], n_rows),
     }
 
+    # randomly add missing values and outliers
+    for col in data.keys():
+        rows = int(n_rows * 0.01)
+        # Add missing values (None)
+        missing_indices = np.random.choice(range(n_rows), rows, replace=False)
+        data[col] = np.array(data[col], dtype=object)
+        data[col][missing_indices] = None
+
+        # Add outliers or "Unknown" values based on data type
+        outlier_indices = np.random.choice(range(n_rows), rows, replace=False)
+        data[col][outlier_indices] = "Invalid"
+
     df = pd.DataFrame(data)
     return df

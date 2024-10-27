@@ -27,8 +27,9 @@ def type_statistic(values: pd.Series):
     counts["datetime"] = sum(pd.to_datetime(values, errors="coerce", format="mixed").notna())
     counts["timedelta"] = sum(pd.to_timedelta(values, errors="coerce").notna())
     counts["string"] = max(length - sum(counts.values()), 0)
-
-    statistic = [{"type": "category", "ratio": 1 - values.unique().size / length, "count": values.unique().size}]
+    unique_ratio = 1 - values.unique().size / length
+    string_ratio = counts["string"] / length
+    statistic = [{"type": "category", "ratio": 2 * unique_ratio * string_ratio, "count": values.unique().size}]
 
     for key, value in counts.items():
         statistic.append({"type": key, "ratio": value / length, "count": value})
@@ -39,28 +40,21 @@ def type_compare(a, b):
     """
     Compare two type statistics
     """
-    def is_category(type):
-        return type["type"] == "category" and type["ratio"] > 0.5 and type["count"] < 1000 and type["count"] > 2
-
-    # Prioritize category type
-    if is_category(a):
-        return -1
-    if is_category(b):
-        return 1
 
     if a["ratio"] != b["ratio"]:
         return b["ratio"] - a["ratio"]
 
     # Handle special position for types with limited range
     special_order = {
-        "int8": 7,
-        "int16": 6,
-        "int32": 5,
-        "int64": 4,
-        "float32": 3,
-        "float64": 2,
-        "complex": 1,
-        "timedelta": 0,
+        "int8": 8,
+        "int16": 7,
+        "int32": 6,
+        "int64": 5,
+        "float32": 4,
+        "float64": 3,
+        "complex": 2,
+        "timedelta": 1,
+        "datetime": 0,
     }
 
     if a["type"] in special_order and b["type"] in special_order:
@@ -70,7 +64,6 @@ def type_compare(a, b):
     return 0
 
 def convert_to_type(df: pd.DataFrame, types: list):
-    print(types)
     result_df = df.copy()
     for i, col in enumerate(df.columns):
         type = types[i]
@@ -89,6 +82,7 @@ def convert_to_type(df: pd.DataFrame, types: list):
         else:
             Type = type.capitalize()
             result_df[col] = df[col].apply(lambda x: to_number(x, type)).astype(Type)
+
     return result_df
 
 
@@ -113,4 +107,5 @@ def infer_and_convert_data_types(df, sample_size=10000):
     # Pick first type as default type
     types = [statistic[0]["type"] for statistic in statistics]
     result_df = convert_to_type(df, types)
+
     return result_df, statistics
