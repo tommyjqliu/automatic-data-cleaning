@@ -54,3 +54,5 @@ venv.bak/
 __pycache__
 db.sqlite3
 media
+
+/api/test_data
