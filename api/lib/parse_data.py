@@ -40,6 +40,7 @@ def to_timedelta(value):
 
 @return_nan_on_error
 def to_number(value, type):
+    value = float(value)
     return getattr(np, type)(value)
 
 
