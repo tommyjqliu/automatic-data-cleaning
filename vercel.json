@@ -7,7 +7,7 @@
   ],
   "functions": {
     "api/**": {
-      "includeFiles": "api/endpoint.py"
+      "excludeFiles": "{.next,*.cache,node_modules,public,app}/**"
     }
   }
 }
