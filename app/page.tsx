@@ -68,16 +68,23 @@ export default function Home() {
     [toast]
   );
 
-  const handleExample = errorHandler(toast, async () => {
-    const response = await axios.get("/api/example_parse");
-    const data = response.data;
-    fileRef.current = stringToCsv(data.data, "example.csv");
-    setCsv(await parseCsv(data.data));
-    setStatistics(data.statistics);
-    setSelectedTypes(
-      data.statistics.map((statistic: Statistic[]) => statistic[0].type)
-    );
-  });
+  const [isExampleLoading, setIsExampleLoading] = useState(false);
+  const handleExample = errorHandler(
+    toast,
+    async () => {
+      setIsExampleLoading(true);
+      const response = await axios.get("/api/example_parse");
+      const data = response.data;
+      fileRef.current = stringToCsv(data.data, "example.csv");
+      setCsv(await parseCsv(data.data));
+      setStatistics(data.statistics);
+      setSelectedTypes(
+        data.statistics.map((statistic: Statistic[]) => statistic[0].type)
+      );
+      setIsExampleLoading(false);
+    },
+    () => setIsExampleLoading(false)
+  );
 
   return (
     <div className="container mx-auto px-4 py-8 h-screen flex flex-col">
@@ -109,10 +116,7 @@ export default function Home() {
         ) : (
           <div className="text-center text-gray-500 flex flex-col">
             No data uploaded. Please upload a CSV file to begin.
-            <Button
-              onClick={handleExample}
-              variant="link"
-            >
+            <Button onClick={handleExample} variant="link" loading={isExampleLoading}>
               Try Example Dataset
             </Button>
           </div>
