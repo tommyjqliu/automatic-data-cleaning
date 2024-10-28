@@ -1,9 +1,8 @@
-export default function downloadCsv(data: Record<string, string>[], headers: string[]) {
+import Papa from "papaparse";
+
+export default function downloadCsv(data: Record<string, string>[]) {
     // Convert CSV data to string
-    const csvContent = [
-        headers.join(','), // CSV header
-        ...data.map(row => headers.map(header => row[header]).join(',')) // CSV rows
-    ].join('\n');
+    const csvContent = Papa.unparse(data);
 
     // Create a Blob with the CSV content
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

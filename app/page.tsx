@@ -10,12 +10,12 @@ import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import errorHandler from "@/app/error_handler";
 import DataTable from "@/components/data-table";
+import stringToCsv from "@/lib/string_to_file";
 
 export default function Home() {
   const fileRef = useRef<File | null>(null);
   const { toast } = useToast();
   const [statistics, setStatistics] = useState<Statistics>([]);
-  const [headers, setHeaders] = useState<string[]>([]);
   const [csv, setCsv] = useState<Record<string, string>[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -43,7 +43,6 @@ export default function Home() {
       const csv = await parseCsv(data.data);
       fileRef.current = file;
       setCsv(csv);
-      setHeaders(Object.keys(csv[0]));
       setStatistics(data.statistics);
       setSelectedTypes(
         data.statistics.map((statistic: Statistic[]) => statistic[0].type)
@@ -69,18 +68,32 @@ export default function Home() {
     [toast]
   );
 
+  const handleExample = errorHandler(toast, async () => {
+    const response = await axios.get("/api/example_parse");
+    const data = response.data;
+    fileRef.current = stringToCsv(data.data, "example.csv");
+    setCsv(await parseCsv(data.data));
+    setStatistics(data.statistics);
+    setSelectedTypes(
+      data.statistics.map((statistic: Statistic[]) => statistic[0].type)
+    );
+  });
+
   return (
     <div className="container mx-auto px-4 py-8 h-screen flex flex-col">
       <header className="mb-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Automatic Data Cleaning</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Automatic Data Cleaning</h1>
+          <p className="text-gray-500 mt-2">
+            Automatically detect data types and clean your dataset in seconds
+          </p>
+        </div>
+
         <div className="flex gap-2">
           <Button onClick={handleUpload} loading={isUploading}>
             Upload CSV
           </Button>
-          <Button
-            disabled={csv.length === 0}
-            onClick={() => downloadCsv(csv, headers)}
-          >
+          <Button disabled={csv.length === 0} onClick={() => downloadCsv(csv)}>
             Download Cleaned CSV
           </Button>
         </div>
@@ -96,6 +109,12 @@ export default function Home() {
         ) : (
           <div className="text-center text-gray-500 flex flex-col">
             No data uploaded. Please upload a CSV file to begin.
+            <Button
+              onClick={handleExample}
+              variant="link"
+            >
+              Try Example Dataset
+            </Button>
           </div>
         )}
       </main>

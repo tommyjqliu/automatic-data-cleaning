@@ -4,6 +4,7 @@ import pandas as pd
 import logging
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
+from lib.generate_data import generate_data
 from lib.exception_handler import exception_handler
 from lib.infer_data_types import convert_to_type, infer_and_convert_data_types
 
@@ -57,6 +58,19 @@ def manual_parse_dataset(request):
 
     df = convert_to_type(df, types)
     response = {
+        "data": df.to_csv(index=False),
+    }
+
+    return HttpResponse(json.dumps(response))
+
+
+@exception_handler
+def example_dataset(request):
+    df = generate_data(1000)
+    df, statistics = infer_and_convert_data_types(df)
+
+    response = {
+        "statistics": statistics,
         "data": df.to_csv(index=False),
     }
 

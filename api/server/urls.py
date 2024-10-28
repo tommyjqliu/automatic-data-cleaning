@@ -18,6 +18,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('api/auto_parse', views.auto_parse_dataset),
-    path('api/manual_parse', views.manual_parse_dataset),
+    path("api/auto_parse", views.auto_parse_dataset),
+    path("api/manual_parse", views.manual_parse_dataset),
+    path("api/example_parse", views.example_dataset),
 ]
