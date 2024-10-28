@@ -98,10 +98,10 @@ export default function Home() {
 
         <div className="flex gap-2">
           <Button onClick={handleUpload} loading={isUploading}>
-            Upload CSV
+            Upload Dataset
           </Button>
           <Button disabled={csv.length === 0} onClick={() => downloadCsv(csv)}>
-            Download Cleaned CSV
+            Download Cleaned Dataset
           </Button>
         </div>
       </header>
@@ -115,7 +115,7 @@ export default function Home() {
           />
         ) : (
           <div className="text-center text-gray-500 flex flex-col">
-            No data uploaded. Please upload a CSV file to begin.
+            No data uploaded. Please upload a CSV/Excel file to begin.
             <Button onClick={handleExample} variant="link" loading={isExampleLoading}>
               Try Example Dataset
             </Button>
