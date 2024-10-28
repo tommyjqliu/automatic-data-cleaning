@@ -7,6 +7,7 @@ type toast = ReturnType<typeof useToast>["toast"];
 export default function errorHandler<T extends (...args: any[]) => any>(
     toast: toast,
     fn: T,
+    finally_fn?: () => void,
 ) {
     return async (...args: Parameters<T>) => {
         try {
@@ -34,6 +35,8 @@ export default function errorHandler<T extends (...args: any[]) => any>(
                     description: "Unknown error",
                 });
             }
+        } finally {
+            finally_fn?.();
         }
     };
 }

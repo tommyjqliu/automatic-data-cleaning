@@ -7,6 +7,21 @@ import {
   SelectValue,
 } from "./ui/select";
 
+const typeNameMap = {
+  int8: "Int8",
+  int16: "Int16",
+  int32: "Int32",
+  int64: "Int64",
+  float32: "Float32",
+  float64: "Float64",
+  complex: "Complex",
+  bool: "Bool",
+  datetime: "Date",
+  timedelta: "Timedelta",
+  category: "Category",
+  string: "String",
+};
+
 export default function TypeSelect({
   statistics,
   value,
@@ -16,7 +31,6 @@ export default function TypeSelect({
   value: string;
   onChange: (value: string) => void;
 }) {
-
   return (
     <Select
       value={value}
@@ -24,14 +38,16 @@ export default function TypeSelect({
         onChange(value);
       }}
     >
-      <SelectTrigger className="w-[140px] border-none">
+      <SelectTrigger className="w-[140px] border-none p-0 shadow-none">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
         {statistics.map((statistic) => {
           return (
             <SelectItem key={statistic.type} value={statistic.type}>
-              {statistic.type}: {statistic.ratio}
+              {typeNameMap[statistic.type as keyof typeof typeNameMap]}
+              {": "}
+              {statistic.ratio.toFixed(2)}
             </SelectItem>
           );
         })}
